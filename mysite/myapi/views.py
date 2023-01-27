@@ -2,9 +2,10 @@ from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from .serializers import HeroSerializer, BlogSerializer
+from .serializers import HeroSerializer, BlogSerializer, UserSerializer
 from .models import Hero, Blog
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import User
 
 
 # Create your views here.
@@ -26,6 +27,18 @@ class BlogViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['GET'])
     def get_blogs(self):
+        queryset = self.get_queryset()
+        serializer = self.serializer_class(queryset, many=True)
+
+        return serializer.data
+
+
+class UserVewSets(viewsets.ModelViewSet):
+    queryset = User.objects.values()
+    serializer_class = UserSerializer
+
+    @action(detail=True, methods=['GET'])
+    def get_users(self):
         queryset = self.get_queryset()
         serializer = self.serializer_class(queryset, many=True)
 
